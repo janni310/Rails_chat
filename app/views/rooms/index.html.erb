@@ -1,0 +1,35 @@
+<div id="room-id" data-room-id="<%= @room.try(:id) %>"></div>
+<div id="user-id" data-user-id="<%= current_user.id %>"></div>
+
+<p>Hello, <%= current_user.email %></p>
+<%= render 'form', room: Room.new %>
+<hr>
+<%= link_to "Home", root_path %>
+<br>
+<br>
+
+<% @rooms.each do |room| %>
+  <%= link_to room do %>
+    <%= room.name %><br>
+  <% end %>
+<% end %>
+
+<div>
+  <% if @room.present? %>
+    <div class="chat-room">
+      <p><%= @room.name %> <%= link_to "Edit", edit_room_path %> |
+      <%= link_to "Delete", room_path(@room), method: :delete, data: { confirm: "Are you sure?" } %></p>
+      <div id="messages">
+      <% @room.messages.each do |message| %>
+      <%= render 'messages/message', message: message %>
+    <% end %>
+  </div>
+  <%= render 'messages/form', message: Message.new, room: @room %>
+<% end %>
+
+<br>
+<% if user_signed_in? %>
+  <%= link_to "Edit Profile", edit_user_registration_path %>
+  <br>
+  <%= link_to "Sign Out", destroy_user_session_path, method: :delete %>
+<% end %>
